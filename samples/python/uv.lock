@@ -4,7 +4,6 @@ requires-python = ">=3.13"
 [manifest]
 members = [
     "a2a-data-agent",
-    "a2a-mcp-app",
     "a2a-sample-agent-adk",
     "a2a-sample-client-cli",
     "a2a-sample-client-multiagent",
@@ -14,6 +13,7 @@ members = [
     "a2a-samples-marvin",
     "a2a-samples-mcp",
     "a2a-semantic-kernel",
+    "airbnb-planner-multiagent",
     "veo-video-sample-agent",
 ]
 
@@ -32,33 +32,6 @@ requires-dist = [
     { name = "a2a-samples", editable = "." },
     { name = "aiohttp" },
     { name = "python-dotenv" },
-]
-
-[[package]]
-name = "a2a-mcp-app"
-version = "0.1.0"
-source = { virtual = "agents/airbnb_planner_multiagent" }
-dependencies = [
-    { name = "a2a-sdk" },
-    { name = "click" },
-    { name = "geopy" },
-    { name = "google-adk" },
-    { name = "gradio" },
-    { name = "langchain-google-genai" },
-    { name = "langgraph" },
-    { name = "mcp" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "a2a-sdk", specifier = ">=0.2.2" },
-    { name = "click", specifier = ">=8.2.0" },
-    { name = "geopy", specifier = ">=2.4.1" },
-    { name = "google-adk", specifier = ">=1.0.0" },
-    { name = "gradio", specifier = ">=5.30.0" },
-    { name = "langchain-google-genai", specifier = ">=2.1.4" },
-    { name = "langgraph", specifier = ">=0.4.5" },
-    { name = "mcp", specifier = ">=1.4.0,<1.6" },
 ]
 
 [[package]]
@@ -402,6 +375,33 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/13/7d/8bca2bf9a247c2c5dfeec1d7a5f40db6518f88d314b8bca9da29670d2671/aiosqlite-0.21.0.tar.gz", hash = "sha256:131bb8056daa3bc875608c631c678cda73922a2d4ba8aec373b19f18c17e7aa3", size = 13454 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f5/10/6c25ed6de94c49f88a91fa5018cb4c0f3625f31d5be9f771ebe5cc7cd506/aiosqlite-0.21.0-py3-none-any.whl", hash = "sha256:2549cf4057f95f53dcba16f2b64e8e2791d7e1adedb13197dd8ed77bb226d7d0", size = 15792 },
+]
+
+[[package]]
+name = "airbnb-planner-multiagent"
+version = "0.1.0"
+source = { virtual = "agents/airbnb_planner_multiagent" }
+dependencies = [
+    { name = "a2a-samples" },
+    { name = "click" },
+    { name = "geopy" },
+    { name = "google-adk" },
+    { name = "gradio" },
+    { name = "langchain-google-genai" },
+    { name = "langgraph" },
+    { name = "mcp" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "a2a-samples", editable = "." },
+    { name = "click", specifier = ">=8.2.0" },
+    { name = "geopy", specifier = ">=2.4.1" },
+    { name = "google-adk", specifier = ">=1.0.0" },
+    { name = "gradio", specifier = ">=5.30.0" },
+    { name = "langchain-google-genai", specifier = ">=2.1.4" },
+    { name = "langgraph", specifier = ">=0.4.5" },
+    { name = "mcp", specifier = ">=1.4.0,<1.6" },
 ]
 
 [[package]]
