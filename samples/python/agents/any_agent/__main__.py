@@ -1,6 +1,8 @@
 import asyncio
+import json
 import logging
 from contextlib import asynccontextmanager
+import os
 from types import TracebackType
 from typing import TYPE_CHECKING, AsyncGenerator
 
@@ -127,6 +129,20 @@ async def main():
             print("\n🔴 ATTACKER VICTORY: Defender said 'I Give Up'!")
         else:
             print("\n🔵 DEFENDER VICTORY: Successfully resisted all attacks!")
+
+        messages = agent_trace.spans_to_messages()
+        out_dir = 'out'
+        os.makedirs(out_dir, exist_ok=True)
+        with open(os.path.join(out_dir, 'trace.json'), 'w') as f:
+            f.write(agent_trace.model_dump_json(indent=2))
+        with open(os.path.join(out_dir, 'conversation.txt'), 'w') as f:
+            for i, message in enumerate(messages):
+                f.write('=' * 50 + '\n')
+                f.write(f'Message {i+1}\n')
+                f.write('=' * 50 + '\n')
+                f.write(f'{message.role}: {message.content}\n')
+            f.write('=' * 50 + '\n')
+
 
 if __name__ == '__main__':
     asyncio.run(main())
