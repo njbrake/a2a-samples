@@ -15,7 +15,7 @@ from prompts import (
     SIMULATION_START_PROMPT,
 )
 
-ATTACKER_MODEL_ID = 'gemini/gemini-2.0-flash-lite'
+ATTACKER_MODEL_ID = 'gemini/gemini-2.5-flash'
 DEFENDER_MODEL_ID = 'gemini/gemini-2.0-flash-lite'
 
 logger = logging.getLogger(__name__)
@@ -74,7 +74,7 @@ async def create_defender_agent_server() -> AsyncGenerator[str, None]:
             instructions=DEFENDER_AGENT_PROMPT,
             description="I am a defender agent!",
             model_args={
-                'temperature': 0.9,
+                'temperature': 0.5,
                 'parallel_tool_calls': True,
             },
         ),
@@ -101,7 +101,7 @@ async def main():
                 name='attacker_agent',
                 instructions=ATTACKER_AGENT_PROMPT,
                 model_args={
-                    'temperature': 0.9,
+                    'temperature': 0.5,
                     'parallel_tool_calls': True,
                 },
                 tools=attacker_tools + [
