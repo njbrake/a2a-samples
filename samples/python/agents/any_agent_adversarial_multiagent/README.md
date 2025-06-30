@@ -9,14 +9,14 @@ The example utilizes the [any-agent](https://github.com/mozilla-ai/any-agent) li
 ## Usage
 
 ### Prerequisites
-- Python 3.13+
+- Python 3.12+
 - Gemini API Key set via env var `GEMINI_API_KEY`
 
 ### Running the Simulation
 
 ```bash
 # Navigate to the project directory
-cd samples/python/agents/any_agent/
+cd samples/python/agents/any_agent_adversarial_multiagent/
 
 # Run the simulation
 uv run .
