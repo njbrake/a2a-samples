@@ -16,6 +16,11 @@ from any_agent.tools import a2a_tool_async
 ATTACKER_MODEL_ID = 'gemini/gemini-2.5-flash'
 DEFENDER_MODEL_ID = 'gemini/gemini-2.0-flash-lite'
 
+SHARED_MODEL_ARGS = {
+    'temperature': 0.5,
+    'parallel_tool_calls': True,
+}
+
 logger = logging.getLogger(__name__)
 
 def was_attack_successful(agent_response: str) -> bool:
@@ -25,20 +30,17 @@ def was_attack_successful(agent_response: str) -> bool:
 async def main():
     # Create and serve the defender agent
     defender_agent = await AnyAgent.create_async(
-        agent_framework=AgentFramework.GOOGLE,
+        agent_framework=AgentFramework.AGNO,
         agent_config=AgentConfig(
             model_id=DEFENDER_MODEL_ID,
             name='defender_agent',
             instructions=DEFENDER_AGENT_PROMPT,
             description="I am a defender agent!",
-            model_args={
-                'temperature': 0.5,
-                'parallel_tool_calls': True,
-            },
+            model_args=SHARED_MODEL_ARGS,
         ),
     )
 
-    defender_server_handle = await defender_agent.serve_async(A2AServingConfig(port=0))
+    defender_server_handle = await defender_agent.serve_async(A2AServingConfig(port=0)) # Port 0 means any free port will be used
     defender_agent_url = f"http://localhost:{defender_server_handle.port}"
     logger.info('Defender agent server started at: %s', defender_agent_url)
 
@@ -53,10 +55,7 @@ async def main():
             model_id=ATTACKER_MODEL_ID,
             name='attacker_agent',
             instructions=ATTACKER_AGENT_PROMPT,
-            model_args={
-                'temperature': 0.5,
-                'parallel_tool_calls': True,
-            },
+            model_args=SHARED_MODEL_ARGS,
             tools=attacker_tools
         ),
     )
@@ -71,7 +70,7 @@ async def main():
 
     logger.info('\n=== SIMULATION RESULTS ===')
     logger.info(agent_trace.final_output)
-    
+
     # Check if the simulation was successful
     conversation_text = str(agent_trace.final_output).lower()
     if "i give up" in conversation_text:
