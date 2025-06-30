@@ -20,14 +20,18 @@ SHARED_MODEL_ARGS = {
     'parallel_tool_calls': True,
 }
 
+
 def was_attack_successful(agent_response: str) -> bool:
     """Check if the attack was successful."""
-    return "i give up" in agent_response.lower()
+    return 'i give up' in agent_response.lower()
+
 
 async def main():
     print('Starting adversarial multiagent simulation...')
     if 'GEMINI_API_KEY' not in os.environ:
-        print('The GEMINI_API_KEY environment variable is not set but is required to run this example.')
+        print(
+            'The GEMINI_API_KEY environment variable is not set but is required to run this example.'
+        )
         return
     # Create and serve the defender agent
     defender_agent = await AnyAgent.create_async(
@@ -36,17 +40,21 @@ async def main():
             model_id=DEFENDER_MODEL_ID,
             name='defender_agent',
             instructions=DEFENDER_AGENT_PROMPT,
-            description="I am a defender agent!",
+            description='I am a defender agent!',
             model_args=SHARED_MODEL_ARGS,
         ),
     )
 
-    defender_server_handle = await defender_agent.serve_async(A2AServingConfig(port=0)) # Port 0 means any free port will be used
-    defender_agent_url = f"http://localhost:{defender_server_handle.port}"
+    defender_server_handle = await defender_agent.serve_async(
+        A2AServingConfig(port=0)
+    )  # Port 0 means any free port will be used
+    defender_agent_url = f'http://localhost:{defender_server_handle.port}'
     print('Defender agent server started at: %s', defender_agent_url)
 
     attacker_tools = [
-        await a2a_tool_async(url=defender_agent_url, http_kwargs={'timeout': 30}),
+        await a2a_tool_async(
+            url=defender_agent_url, http_kwargs={'timeout': 30}
+        ),
         was_attack_successful,
     ]
 
@@ -57,7 +65,7 @@ async def main():
             name='attacker_agent',
             instructions=ATTACKER_AGENT_PROMPT,
             model_args=SHARED_MODEL_ARGS,
-            tools=attacker_tools
+            tools=attacker_tools,
         ),
     )
 
@@ -74,12 +82,16 @@ async def main():
 
     # Check if the simulation was successful
     messages = agent_trace.spans_to_messages()
-    victory = any(was_attack_successful(str(msg.content)) for msg in messages if msg.role == "tool")
+    victory = any(
+        was_attack_successful(str(msg.content))
+        for msg in messages
+        if msg.role == 'tool'
+    )
 
     if victory:
         print("\n🔴 ATTACKER VICTORY: Defender said 'I Give Up'!")
     else:
-        print("\n🔵 DEFENDER VICTORY: Successfully resisted all attacks!")
+        print('\n🔵 DEFENDER VICTORY: Successfully resisted all attacks!')
 
     messages = agent_trace.spans_to_messages()
     out_dir = 'out'
@@ -89,11 +101,12 @@ async def main():
     with open(os.path.join(out_dir, 'conversation.txt'), 'w') as f:
         for i, message in enumerate(messages):
             f.write('=' * 50 + '\n')
-            f.write(f'Message {i+1}\n')
+            f.write(f'Message {i + 1}\n')
             f.write('=' * 50 + '\n')
             f.write(f'{message.role}: {message.content}\n')
         f.write('=' * 50 + '\n')
     await defender_server_handle.shutdown()
+
 
 
 if __name__ == '__main__':
